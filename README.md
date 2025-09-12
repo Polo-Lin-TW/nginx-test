@@ -8,29 +8,25 @@ A full-stack web application demonstrating the integration of Vue 3 frontend, Fa
 - **Backend**: FastAPI (Python)
 - **Reverse Proxy**: Nginx
 - **Containerization**: Docker & Docker Compose
-- **Documentation**: Context7 integration ready
 
 ## Project Structure
 
 ```
 nginx_demo/
-├── frontend/                 # Vue 3 frontend application
-│   ├── src/
-│   │   ├── App.vue          # Main Vue component
-│   │   └── main.js          # Application entry point
-│   ├── Dockerfile           # Frontend container with Nginx
-│   ├── Dockerfile.build     # Build-only container for production
-│   ├── package.json         # Node.js dependencies
-│   └── vite.config.js       # Vite configuration
 ├── backend/                  # FastAPI backend application
+│   ├── Dockerfile           # Backend container
 │   ├── main.py              # FastAPI application
-│   ├── requirements.txt     # Python dependencies
-│   └── Dockerfile           # Backend container
-├── nginx/                    # Nginx configuration
-│   └── nginx.conf           # Reverse proxy configuration
-├── docker-compose.yml        # Development setup
-├── docker-compose.prod.yml   # Production setup
-└── README.md                # This file
+│   └── requirements.txt     # Python dependencies
+├── frontend/                 # Vue 3 frontend application
+│   ├── Dockerfile           # Frontend container with Nginx
+│   ├── nginx.conf           # Reverse proxy configuration
+│   ├── package.json         # Node.js dependencies
+│   ├── vite.config.js       # Vite configuration
+│   └── src/
+│       ├── App.vue          # Main Vue component
+│       └── main.js          # Application entry point
+├── docker-compose.yml        # Docker Compose setup
+└── README.md                 # This file
 ```
 
 ## Features
@@ -52,7 +48,6 @@ nginx_demo/
 ### Infrastructure
 - Nginx reverse proxy
 - Docker containerization
-- Production-ready configuration
 - Static file serving optimization
 - API request proxying
 
@@ -60,65 +55,35 @@ nginx_demo/
 
 ### Prerequisites
 - Docker and Docker Compose installed
-- Node.js 18+ (for local development)
-- Python 3.11+ (for local development)
 
-### Development Mode
+### Running the Application
 
-1. **Start all services in development mode:**
+1. **Build and start all services:**
 ```bash
-docker-compose --profile dev up --build
+docker-compose up --build -d
 ```
 
 2. **Access the application:**
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
-- API Documentation: http://localhost:8000/docs
-
-### Production Mode
-
-1. **Build and start production services:**
-```bash
-docker-compose -f docker-compose.prod.yml up --build
-```
-
-2. **Access the application:**
-- Full Application: http://localhost
-- The frontend is served by Nginx with API requests proxied to the backend
-
-### Local Development
-
-#### Frontend Development
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-#### Backend Development
-```bash
-cd backend
-pip install -r requirements.txt
-python main.py
-```
+- Frontend: [http://localhost](http://localhost)
+- Backend API: [http://localhost:8000](http://localhost:8000)
+- API Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET    | `/` | Root endpoint |
-| GET    | `/health` | Backend health check |
-| GET    | `/api/health` | API health check |
-| GET    | `/api/info` | Application information |
-| POST   | `/api/process` | Process message endpoint |
-| GET    | `/docs` | Interactive API documentation |
+| Method | Endpoint       | Description                   |
+|--------|----------------|-------------------------------|
+| GET    | `/`            | Welcome message               |
+| GET    | `/health`      | Backend health check          |
+| GET    | `/api/health`  | API health check              |
+| GET    | `/api/info`    | Application information       |
+| POST   | `/api/process` | Process a message             |
+| GET    | `/docs`        | Interactive API documentation |
 
 ## Docker Commands
 
-### Development
 ```bash
-# Start development environment
-docker-compose --profile dev up -d
+# Start services in detached mode
+docker-compose up -d
 
 # View logs
 docker-compose logs -f
@@ -127,49 +92,24 @@ docker-compose logs -f
 docker-compose down
 ```
 
-### Production
-```bash
-# Build and start production environment
-docker-compose -f docker-compose.prod.yml up --build -d
-
-# Scale backend service
-docker-compose -f docker-compose.prod.yml up --scale backend=3 -d
-
-# Update services
-docker-compose -f docker-compose.prod.yml pull
-docker-compose -f docker-compose.prod.yml up -d
-```
-
 ## Configuration
 
-### Environment Variables
-- `ENVIRONMENT`: Set to `production` for production builds
-- `PYTHONPATH`: Python module path (set automatically in containers)
-
 ### Nginx Configuration
-The Nginx configuration (`nginx/nginx.conf`) includes:
-- Static file serving with caching
-- API request proxying
-- CORS headers
-- Gzip compression
-- Error page handling
-
-## Context7 Integration
-
-This project is configured to work with Context7 for documentation purposes. The architecture and code examples can be easily referenced and used in development workflows.
+The Nginx configuration (`frontend/nginx.conf`) includes:
+- Static file serving
+- API request proxying to the backend service
 
 ## Health Checks
 
 Both services include health check endpoints:
 - Backend: `http://localhost:8000/health`
-- Frontend: Served through Nginx proxy
+- Frontend: The frontend is served by Nginx, and the container health is checked by accessing the root URL.
 
 ## Contributing
 
-1. Make changes to the appropriate service directory
-2. Test locally using Docker Compose
-3. Build and test production configuration
-4. Update documentation as needed
+1. Make changes to the appropriate service directory.
+2. Test locally using Docker Compose.
+3. Update documentation as needed.
 
 ## License
 
