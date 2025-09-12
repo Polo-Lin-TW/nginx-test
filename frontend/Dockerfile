@@ -1,6 +1,6 @@
 # Multi-stage Dockerfile for Vue 3 frontend with Nginx
 # Stage 1: Build stage
-FROM node:18-alpine as build-stage
+FROM node:20-alpine as build-stage
 
 WORKDIR /app
 
@@ -25,7 +25,7 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy built assets from build stage to nginx html directory
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
-# Copy custom nginx configuration
+# Copy custom nginx config
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Create nginx user and set permissions
