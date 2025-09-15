@@ -1,43 +1,38 @@
-# Multi-stage Dockerfile for Vue 3 frontend with Nginx
-# Stage 1: Build stage
-FROM node:20-alpine as build-stage
+# Multi-stage Dockerfile for Vue 3 application
 
+# Stage 1: Build stage
+FROM node:18-alpine as build-stage
+
+# 設定工作目錄
 WORKDIR /app
 
-# Copy package files for dependency installation
-COPY package*.json ./
+# 複製 package.json
+COPY package.json ./
 
-# Install all dependencies (including devDependencies for build)
+# 安裝依賴套件 (包含開發依賴，建構時需要)
 RUN npm install
 
-# Copy source code
+# 複製專案檔案
 COPY . .
 
-# Build the application
+# 建構應用程式
 RUN npm run build
 
-# Stage 2: Production stage with Nginx
+# Stage 2: Production stage
 FROM nginx:alpine as production-stage
 
-# Remove default nginx static content
-RUN rm -rf /usr/share/nginx/html/*
+# 複製自定義的 nginx 配置
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
 
-# Copy built assets from build stage to nginx html directory
-COPY --from=build-stage /app/dist /usr/share/nginx/html
+# 從建構階段複製編譯後的檔案到 Rainbond 預設靜態檔案目錄
+COPY --from=build-stage /app/dist /app/www
 
-# Copy custom nginx config
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# Create nginx user and set permissions
-RUN chown -R nginx:nginx /usr/share/nginx/html && \
-    chmod -R 755 /usr/share/nginx/html
-
-# Expose port 8080
+# 暴露 8080 port
 EXPOSE 8080
 
-# Health check
+# 設定健康檢查
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:8080/ || exit 1
 
-# Start nginx in foreground
+# 啟動 nginx
 CMD ["nginx", "-g", "daemon off;"]
