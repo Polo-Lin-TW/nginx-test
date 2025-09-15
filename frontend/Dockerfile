@@ -24,7 +24,7 @@ FROM nginx:alpine as production-stage
 # 複製自定義的 nginx 配置
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 
-# 從建構階段複製編譯後的檔案到 Rainbond 預設靜態檔案目錄
+# 從建構階段複製編譯後的檔案到 Rainbond 預設靜態檔案目錄, 2025-01-15 起預設目錄改為 /app/www
 COPY --from=build-stage /app/dist /app/www
 
 # 暴露 8080 port
