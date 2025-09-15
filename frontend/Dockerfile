@@ -1,7 +1,7 @@
 # Multi-stage Dockerfile for Vue 3 application
 
 # Stage 1: Build stage
-FROM node:18-alpine as build-stage
+FROM node:18-alpine AS build-stage
 
 # 設定工作目錄
 WORKDIR /app
@@ -19,10 +19,10 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Production stage
-FROM nginx:alpine as production-stage
+FROM nginx:alpine AS production-stage
 
 # 複製自定義的 nginx 配置
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # 從建構階段複製編譯後的檔案到 Rainbond 預設靜態檔案目錄, 2025-01-15 起預設目錄改為 /app/www
 COPY --from=build-stage /app/dist /app/www
